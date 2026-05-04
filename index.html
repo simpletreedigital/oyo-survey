@@ -117,6 +117,28 @@
     .cb-row a{color:rgba(255,255,255,.55)}
     .cb-row input[type=checkbox]{accent-color:#fde68a;margin-top:2px;flex-shrink:0}
 
+    /* A2P consent checkboxes */
+    .consent-block{width:100%;display:flex;flex-direction:column;gap:8px;margin:6px 0 16px;text-align:left}
+    .consent-row{
+      display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+      padding:11px 12px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.1);border-radius:10px;
+      transition:background .15s,border-color .15s;
+    }
+    .consent-row:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18)}
+    .consent-row input[type=checkbox]{
+      accent-color:#fde68a;margin-top:2px;flex-shrink:0;
+      width:15px;height:15px;cursor:pointer;
+    }
+    .consent-text{font-size:11.5px;color:rgba(255,255,255,.72);line-height:1.5}
+    .consent-text strong{color:rgba(255,255,255,.9);font-weight:600}
+    .consent-legal{
+      font-size:10.5px;color:rgba(255,255,255,.42);
+      text-align:center;line-height:1.55;
+      margin:8px auto 4px;max-width:440px;
+    }
+    .consent-legal a{color:rgba(255,255,255,.62);text-decoration:underline}
+
     .success-wrap{text-align:center;padding:1rem 0}
     .success-icon{width:64px;height:64px;border-radius:50%;background:rgba(110,231,183,.15);border:2px solid #6ee7b7;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:28px}
 
@@ -269,14 +291,31 @@
       <div class="step-sub">A Nova Scotia solar advisor will call when your custom roof design is ready, typically within 24 hours.</div>
       <input class="inp" id="phone" type="tel" placeholder="Phone number" style="width:100%"/>
       <div class="err-msg" id="phone-err">Please enter a valid 10-digit phone number.</div>
-      <button class="next-btn" onclick="submitForm()" style="padding:16px 48px;font-size:15px;">Get My Free Quote →</button>
-      <p style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;line-height:1.55;margin:14px auto 4px;max-width:420px">
-        By submitting you agree to OYO Energy's
-        <a href="https://oyoenergy.ca/privacy-policy/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline">Privacy Policy</a>
+
+      <div class="consent-block">
+        <label class="consent-row">
+          <input type="checkbox" id="transactional_consent"/>
+          <span class="consent-text">
+            I agree to receive <strong>transactional text messages</strong> from OYO Energy Limited regarding my solar quote, including appointment reminders and follow-up communications.
+          </span>
+        </label>
+
+        <label class="consent-row">
+          <input type="checkbox" id="marketing_consent"/>
+          <span class="consent-text">
+            I agree to receive <strong>marketing text messages</strong> from OYO Energy Limited about special offers, promotions, and service updates.
+          </span>
+        </label>
+      </div>
+
+      <p class="consent-legal">
+        Message frequency varies. Msg &amp; data rates may apply. Reply HELP for help, STOP to unsubscribe at any time. Consent to receive SMS is not required to get a quote. By submitting, you agree to OYO Energy's
+        <a href="https://oyoenergy.ca/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
         and
-        <a href="https://oyoenergy.ca/terms-conditions/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline">Terms &amp; Conditions</a>,
-        and authorize us to contact you about your solar inquiry.
+        <a href="https://oyoenergy.ca/terms-conditions/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
       </p>
+
+      <button class="next-btn" onclick="submitForm()" style="padding:16px 48px;font-size:15px;">Get My Free Quote →</button>
       <button class="back-btn" onclick="goTo(8)">← Back</button>
     </div>
 
@@ -400,8 +439,15 @@ function submitForm(){
   const p=document.getElementById('phone').value.trim();
   if(p.replace(/\D/g,'').length<10){showErr('phone-err','Please enter a valid 10-digit phone number.');return;}
   hideErr('phone-err');data.phone=p;
-  const consentEl=document.getElementById('consent');
-  data.sms_consent=consentEl?consentEl.checked:false;
+
+  // A2P consent: two separate, optional checkboxes. Submission proceeds either way.
+  const transactionalEl=document.getElementById('transactional_consent');
+  const marketingEl=document.getElementById('marketing_consent');
+  data.transactional_sms_consent=transactionalEl?transactionalEl.checked:false;
+  data.marketing_sms_consent=marketingEl?marketingEl.checked:false;
+  // Combined flag stays true if EITHER checkbox is ticked (backward compat for existing GHL workflows)
+  data.sms_consent=data.transactional_sms_consent||data.marketing_sms_consent;
+
   goTo(10);
   const tfField=document.querySelector('input[name="xxTrustedFormCertUrl"]');
   const tfCert=tfField?tfField.value:'';
@@ -414,7 +460,10 @@ function submitForm(){
     time_in_home:data['time_in_home']||'',
     how_much_is_your_monthly_electric_bill:data['how_much_is_your_monthly_electric_bill']||'',
     roof_age:data['roof_age']||'',roof_type:data['roof_type']||'',
+    transactional_sms_consent:data.transactional_sms_consent?'Yes':'No',
+    marketing_sms_consent:data.marketing_sms_consent?'Yes':'No',
     sms_consent:data.sms_consent?'Yes':'No',
+    consent_timestamp:new Date().toISOString(),
     trusted_form_cert_url:tfCert,
     gclid:GCLID,utm_source:UTM_SOURCE,utm_medium:UTM_MEDIUM,
     utm_campaign:UTM_CAMPAIGN,utm_content:UTM_CONTENT,utm_term:UTM_TERM,
