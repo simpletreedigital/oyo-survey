@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Oyo Energy — Solar Quote Survey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- TrustedForm -->
+  <script type="text/javascript">
+    (function(){
+      var tf=document.createElement('script');
+      tf.type='text/javascript';tf.async=true;
+      tf.src=("https:"==document.location.protocol?'https':'http')+
+        '://api.trustedform.com/trustedform.js?field=xxTrustedFormCertUrl&use_tagged_consent=true&l='+
+        new Date().getTime()+Math.random();
+      var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(tf,s);
+    })();
+  </script>
+  <noscript><img src='https://api.trustedform.com/ns.gif'/></noscript>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    /* Transparent body so iframe blends with parent page */
+    html,body{
+      font-family:'Inter','Segoe UI',sans-serif;
+      background:transparent !important;
+      min-height:100vh;
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    /* Wrapper centers the survey card inside the iframe */
+    .embed-wrap{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:20px 16px;
+    }
+
+    .survey-card{
+      width:100%;
+      max-width:520px;
+      background:linear-gradient(145deg,#1a0a3c 0%,#2d1060 45%,#1a2060 100%);
+      border-radius:24px;
+      padding:40px 32px 32px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 40px 80px rgba(0,0,0,.4);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .survey-card::before,.survey-card::after{
+      content:'';position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);opacity:.22;
+    }
+    .survey-card::before{width:320px;height:320px;background:#f7c948;top:-100px;right:-80px}
+    .survey-card::after{width:280px;height:280px;background:#e040b5;bottom:-80px;left:-60px}
+
+    /* Progress */
+    .progress-wrap{width:100%;height:5px;background:rgba(255,255,255,.1);border-radius:5px;margin-bottom:32px;position:relative;z-index:1;overflow:hidden}
+    .progress-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#f9a8d4,#fde68a,#6ee7b7);transition:width .4s ease;width:11%}
+
+    /* Steps */
+    .step{display:none;flex-direction:column;align-items:center;position:relative;z-index:1}
+    .step.active{display:flex}
+
+    .step-badge{font-size:11px;letter-spacing:2.5px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:12px}
+    .step-headline{font-size:22px;font-weight:700;color:#fff;text-align:center;line-height:1.3;margin-bottom:8px}
+    .step-sub{font-size:14px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:28px;max-width:380px}
+
+    .option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;margin-bottom:24px}
+    .option-grid.cols-1{grid-template-columns:1fr;max-width:380px}
+    .option-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+
+    .opt-btn{
+      background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);
+      border-radius:14px;padding:18px 12px;cursor:pointer;
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      transition:background .15s,border-color .15s,transform .1s;color:#fff;text-align:center;
+    }
+    .opt-btn:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.35);transform:translateY(-2px)}
+    .opt-btn.selected{background:rgba(253,230,138,.15);border-color:#fde68a;transform:translateY(-2px)}
+    .opt-icon{font-size:26px}
+    .opt-label{font-size:13px;font-weight:600;color:#fff}
+    .opt-sub{font-size:10px;color:rgba(255,255,255,.45)}
+
+    .inp{
+      width:100%;padding:14px 16px;border-radius:12px;
+      border:1.5px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.08);color:#fff;
+      font-size:15px;font-family:inherit;outline:none;margin-bottom:10px;
+      transition:border-color .15s;
+    }
+    .inp::placeholder{color:rgba(255,255,255,.35)}
+    .inp:focus{border-color:#fde68a}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+
+    .err-msg{font-size:12px;color:#f9a8d4;margin-bottom:8px;display:none;text-align:center}
+
+    .next-btn{
+      background:linear-gradient(90deg,#f9a8d4 0%,#fde68a 50%,#6ee7b7 100%);
+      border:none;border-radius:50px;padding:15px 48px;
+      font-size:15px;font-weight:700;color:#1a0a3c;cursor:pointer;letter-spacing:.3px;
+      transition:opacity .15s,transform .1s;
+    }
+    .next-btn:hover{opacity:.9;transform:scale(1.02)}
+    .next-btn:active{transform:scale(.98)}
+
+    .back-btn{background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;margin-top:12px;transition:color .15s;font-family:inherit}
+    .back-btn:hover{color:rgba(255,255,255,.7)}
+
+    .addr-note{font-size:11px;color:rgba(255,255,255,.3);margin-top:-4px;margin-bottom:14px;text-align:center}
+
+    .cb-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;font-size:11px;color:rgba(255,255,255,.4);line-height:1.6;max-width:420px}
+    .cb-row a{color:rgba(255,255,255,.55)}
+    .cb-row input[type=checkbox]{accent-color:#fde68a;margin-top:2px;flex-shrink:0}
+
+    .success-wrap{text-align:center;padding:1rem 0}
+    .success-icon{width:64px;height:64px;border-radius:50%;background:rgba(110,231,183,.15);border:2px solid #6ee7b7;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:28px}
+
+    @media(max-width:480px){
+      .survey-card{padding:28px 18px 24px;border-radius:18px}
+      .step-headline{font-size:19px}
+      .option-grid.cols-3{grid-template-columns:repeat(2,1fr)}
+      .next-btn{padding:14px 32px;font-size:14px}
+      .row2{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="embed-wrap">
+  <div class="survey-card">
+
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- S1 -->
+    <div class="step active" id="s1">
+      <div class="step-badge">Step 1 of 9 · Free solar assessment</div>
+      <div class="step-headline">🏡 Do you own your home?</div>
+      <div class="step-sub">Homeowners qualify for exclusive solar incentives that can eliminate your electric bill.</div>
+      <div class="option-grid cols-1">
+        <button class="opt-btn selected" onclick="pick(this,'do_you_own_your_home','Yes','s1',true)">
+          <span class="opt-icon">🏠</span>
+          <span class="opt-label">Yes, I own my home</span>
+          <span class="opt-sub">I'm the primary decision maker</span>
+        </button>
+        <button class="opt-btn" onclick="dq()">
+          <span class="opt-icon">🔑</span>
+          <span class="opt-label">No, I rent or lease</span>
+          <span class="opt-sub">I don't own the property</span>
+        </button>
+        <button class="opt-btn" onclick="pick(this,'do_you_own_your_home','New Property Build','s1',true)">
+          <span class="opt-icon">🏗️</span>
+          <span class="opt-label">New Property Build</span>
+          <span class="opt-sub">Currently under construction</span>
+        </button>
+      </div>
+      <button class="next-btn" onclick="adv_s1()">Continue →</button>
+    </div>
+
+    <!-- S2 -->
+    <div class="step" id="s2">
+      <div class="step-badge">Step 2 of 9 · Free solar assessment</div>
+      <div class="step-headline">📅 How long have you lived in your home?</div>
+      <div class="step-sub">Longer-term homeowners see the greatest lifetime savings from solar.</div>
+      <div class="option-grid cols-1">
+        <button class="opt-btn" onclick="pick(this,'time_in_home','Less than 6 Months','s2',true)"><span class="opt-icon">📆</span><span class="opt-label">Less than 6 months</span></button>
+        <button class="opt-btn" onclick="pick(this,'time_in_home','Less than 1 Year','s2',true)"><span class="opt-icon">🗓️</span><span class="opt-label">Less than 1 year</span></button>
+        <button class="opt-btn" onclick="pick(this,'time_in_home','Less than 5 Years','s2',true)"><span class="opt-icon">🏘️</span><span class="opt-label">Less than 5 years</span></button>
+        <button class="opt-btn" onclick="pick(this,'time_in_home','More than 5 Years','s2',true)"><span class="opt-icon">🏡</span><span class="opt-label">More than 5 years</span><span class="opt-sub">Long-term homeowner, best ROI!</span></button>
+      </div>
+      <button class="next-btn" onclick="adv_s2()">Continue →</button>
+      <button class="back-btn" onclick="goTo(1)">← Back</button>
+    </div>
+
+    <!-- S3 -->
+    <div class="step" id="s3">
+      <div class="step-badge">Step 3 of 9 · Free solar assessment</div>
+      <div class="step-headline">⚡ What's your average monthly electric bill?</div>
+      <div class="step-sub">Estimate your average monthly NS Power bill.</div>
+      <div class="option-grid cols-1">
+        <button class="opt-btn" onclick="pick(this,'how_much_is_your_monthly_electric_bill','Under $100','s3',true)"><span class="opt-icon">💡</span><span class="opt-label">Under $100</span></button>
+        <button class="opt-btn" onclick="pick(this,'how_much_is_your_monthly_electric_bill','$100-$200','s3',true)"><span class="opt-icon">🔋</span><span class="opt-label">$100 – $200</span></button>
+        <button class="opt-btn" onclick="pick(this,'how_much_is_your_monthly_electric_bill','$200-$300','s3',true)"><span class="opt-icon">⚡</span><span class="opt-label">$200 – $300</span></button>
+        <button class="opt-btn" onclick="pick(this,'how_much_is_your_monthly_electric_bill','$300+','s3',true)"><span class="opt-icon">🔥</span><span class="opt-label">$300+</span></button>
+      </div>
+      <button class="next-btn" onclick="adv_s3()">Continue →</button>
+      <button class="back-btn" onclick="goTo(2)">← Back</button>
+    </div>
+
+    <!-- S4 -->
+    <div class="step" id="s4">
+      <div class="step-badge">Step 4 of 9 · Free solar assessment</div>
+      <div class="step-headline">🏗️ How old is your roof?</div>
+      <div class="step-sub">A newer roof means your solar system will last longer without needing a replacement underneath it.</div>
+      <div class="option-grid cols-3">
+        <button class="opt-btn" onclick="pick(this,'roof_age','0-5','s4',true)"><span class="opt-icon">✨</span><span class="opt-label">0 – 5 yrs</span><span class="opt-sub">Nearly new</span></button>
+        <button class="opt-btn" onclick="pick(this,'roof_age','5-10','s4',true)"><span class="opt-icon">🏠</span><span class="opt-label">5 – 10 yrs</span><span class="opt-sub">Good condition</span></button>
+        <button class="opt-btn" onclick="pick(this,'roof_age','More than 10','s4',true)"><span class="opt-icon">🔧</span><span class="opt-label">10+ yrs</span><span class="opt-sub">May need check</span></button>
+      </div>
+      <button class="next-btn" onclick="adv_s4()">Continue →</button>
+      <button class="back-btn" onclick="goTo(3)">← Back</button>
+    </div>
+
+    <!-- S5 -->
+    <div class="step" id="s5">
+      <div class="step-badge">Step 5 of 9 · Free solar assessment</div>
+      <div class="step-headline">🛖 What type of roof do you have?</div>
+      <div class="step-sub">All roof types are compatible with solar. This helps us choose the right mounting system.</div>
+      <div class="option-grid cols-3">
+        <button class="opt-btn" onclick="pick(this,'roof_type','Metal','s5',true)"><span class="opt-icon">🔩</span><span class="opt-label">Metal</span><span class="opt-sub">Standing seam</span></button>
+        <button class="opt-btn" onclick="pick(this,'roof_type','Shingle','s5',true)"><span class="opt-icon">🏠</span><span class="opt-label">Shingle</span><span class="opt-sub">Asphalt / composite</span></button>
+        <button class="opt-btn" onclick="pick(this,'roof_type','Other','s5',true)"><span class="opt-icon">🏛️</span><span class="opt-label">Other</span><span class="opt-sub">Tile, flat, unsure</span></button>
+      </div>
+      <button class="next-btn" onclick="adv_s5()">Continue →</button>
+      <button class="back-btn" onclick="goTo(4)">← Back</button>
+    </div>
+
+    <!-- S6 -->
+    <div class="step" id="s6">
+      <div class="step-badge">Step 6 of 9 · Free solar assessment</div>
+      <div class="step-headline">👤 What's your name?</div>
+      <div class="step-sub">We'll use this to personalize your free solar proposal.</div>
+      <div class="row2" style="margin-bottom:4px">
+        <input class="inp" id="first_name" type="text" placeholder="First name"/>
+        <input class="inp" id="last_name" type="text" placeholder="Last name"/>
+      </div>
+      <div class="err-msg" id="name-err">Please enter your first and last name.</div>
+      <button class="next-btn" onclick="adv_s6()">Continue →</button>
+      <button class="back-btn" onclick="goTo(5)">← Back</button>
+    </div>
+
+    <!-- S7 -->
+    <div class="step" id="s7">
+      <div class="step-badge">Step 7 of 9 · Free solar assessment</div>
+      <div class="step-headline">📍 What's your home address?</div>
+      <div class="step-sub">We use satellite imaging to design the most efficient panel layout for your exact roof.</div>
+      <input class="inp" id="address1" type="text" placeholder="Start typing your address..." autocomplete="off" style="width:100%"/>
+      <div class="row2">
+        <input class="inp" id="city" type="text" placeholder="City"/>
+        <input class="inp" id="postal_code" type="text" placeholder="Postal code"/>
+      </div>
+      <div class="err-msg" id="addr-err">Please enter your full address including city and postal code.</div>
+      <p class="addr-note">🔒 Used for satellite roof analysis only. Never shared or sold.</p>
+      <button class="next-btn" onclick="adv_s7()">Continue →</button>
+      <button class="back-btn" onclick="goTo(6)">← Back</button>
+    </div>
+
+    <!-- S8 -->
+    <div class="step" id="s8">
+      <div class="step-badge">Step 8 of 9 · Free solar assessment</div>
+      <div class="step-headline">📧 Where should we send your solar design?</div>
+      <div class="step-sub">We'll email you a personalized savings estimate and financing breakdown, usually within minutes.</div>
+      <input class="inp" id="email" type="email" placeholder="Email address" style="width:100%"/>
+      <div class="err-msg" id="email-err">Please enter a valid email address.</div>
+      <button class="next-btn" onclick="adv_s8()">Continue →</button>
+      <button class="back-btn" onclick="goTo(7)">← Back</button>
+    </div>
+
+    <!-- S9 -->
+    <div class="step" id="s9">
+      <div class="step-badge">Step 9 of 9 · Free solar assessment</div>
+      <div class="step-headline">📱 Best number to reach you?</div>
+      <div class="step-sub">A Nova Scotia solar advisor will call when your custom roof design is ready, typically within 24 hours.</div>
+      <input class="inp" id="phone" type="tel" placeholder="Phone number" style="width:100%"/>
+      <div class="err-msg" id="phone-err">Please enter a valid 10-digit phone number.</div>
+      <button class="next-btn" onclick="submitForm()" style="padding:16px 48px;font-size:15px;">Get My Free Quote →</button>
+      <p style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;line-height:1.55;margin:14px auto 4px;max-width:420px">
+        By clicking "Get My Free Quote" you agree to OYO Energy's
+        <a href="https://oyoenergy.ca/privacy-policy/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline">Privacy Policy</a>
+        and
+        <a href="https://oyoenergy.ca/terms-conditions/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.65);text-decoration:underline">Terms &amp; Conditions</a>,
+        and authorize us to contact you about your solar inquiry.
+      </p>
+      <button class="back-btn" onclick="goTo(8)">← Back</button>
+    </div>
+
+    <!-- S10 Submitting -->
+    <div class="step" id="s10">
+      <div class="success-wrap">
+        <div class="success-icon">✅</div>
+        <div class="step-headline" style="margin-bottom:10px">Submitting your info...</div>
+        <div class="step-sub">Preparing your personalized Nova Scotia solar assessment.</div>
+      </div>
+    </div>
+
+  </div><!-- /survey-card -->
+</div><!-- /embed-wrap -->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcKfNpLbha0iUiYZu18VQ1yj9Ljez_-XI&libraries=places&callback=initAutocomplete" async defer></script>
+<script>
+const WEBHOOK_URL='https://services.leadconnectorhq.com/hooks/9nKF12HCERxWw26kw40b/webhook-trigger/205cf890-8274-43fa-ba3a-2e4950c59fba';
+const DQ_URL='https://quote.oyoenergy.ca/sorry-dq';
+const THANK_URL='https://quote.oyoenergy.ca/thank-you';
+
+// Inherit query params from PARENT page when iframed (so UTMs/gclid pass through)
+function getParam(n){
+  // Look at this iframe's URL first
+  const own=new URLSearchParams(window.location.search).get(n);
+  if(own) return own;
+  // Then try the parent page URL (works if same-origin OR via document.referrer)
+  try{
+    if(window.parent !== window){
+      const pp=new URLSearchParams(window.parent.location.search).get(n);
+      if(pp) return pp;
+    }
+  }catch(e){/* cross-origin block, fall through */}
+  // Last resort: parse from referrer
+  try{
+    const ref=document.referrer;
+    if(ref){
+      const refUrl=new URL(ref);
+      const r=new URLSearchParams(refUrl.search).get(n);
+      if(r) return r;
+    }
+  }catch(e){}
+  return '';
+}
+
+const GCLID=getParam('gclid'),UTM_SOURCE=getParam('utm_source'),UTM_MEDIUM=getParam('utm_medium'),
+      UTM_CAMPAIGN=getParam('utm_campaign'),UTM_CONTENT=getParam('utm_content'),
+      UTM_TERM=getParam('utm_term');
+
+// PAGE_URL should reflect the parent (the page the user actually visited), not the iframe
+let PAGE_URL=window.location.href;
+try{
+  if(window.parent!==window && document.referrer){PAGE_URL=document.referrer;}
+}catch(e){}
+
+const _n=new Date(),LEAD_DATE=_n.toISOString().split('T')[0],LEAD_TIME=_n.toTimeString().slice(0,5);
+
+const data={};
+const MANUAL=[6,7,8,9];
+let current=1;
+
+const progMap={1:'11%',2:'22%',3:'33%',4:'44%',5:'56%',6:'67%',7:'78%',8:'89%',9:'100%',10:'100%'};
+
+function goTo(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  current=n;
+  document.getElementById('progressFill').style.width=progMap[n]||'100%';
+  const card=document.querySelector('.survey-card');
+  if(card){card.scrollIntoView({behavior:'smooth',block:'start'});}else{window.scrollTo({top:0,behavior:'smooth'});}
+  // Tell parent the step changed (for optional analytics or height adjustments)
+  try{window.parent.postMessage({type:'oyo-step',step:n},'*');}catch(e){}
+}
+
+// Cross-origin safe redirect: postMessage to parent, fall back to top, then self
+function safeRedirect(url){
+  try{window.parent.postMessage({type:'oyo-redirect',url:url},'*');}catch(e){}
+  try{
+    if(window.top!==window.self){window.top.location.href=url;return;}
+  }catch(e){}
+  window.location.href=url;
+}
+
+function dq(){setTimeout(()=>{safeRedirect(DQ_URL);},350);}
+
+function pick(el,key,val,slideId,auto){
+  document.querySelectorAll('#'+slideId+' .opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  data[key]=val;
+  clearErr(slideId);
+  if(auto&&!MANUAL.includes(current)) setTimeout(()=>{goTo(current+1);},280);
+}
+function showErr(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg||'Please make a selection.';el.style.display='block';}}
+function clearErr(slideId){const el=document.querySelector('#'+slideId+' .err-msg');if(el)el.style.display='none';}
+function hideErr(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+
+function adv_s1(){if(!data['do_you_own_your_home']){return;}goTo(2);}
+function adv_s2(){if(!data['time_in_home']){alert('Please make a selection.');return;}goTo(3);}
+function adv_s3(){if(!data['how_much_is_your_monthly_electric_bill']){alert('Please make a selection.');return;}goTo(4);}
+function adv_s4(){if(!data['roof_age']){alert('Please make a selection.');return;}goTo(5);}
+function adv_s5(){if(!data['roof_type']){alert('Please make a selection.');return;}goTo(6);}
+function adv_s6(){
+  const fn=document.getElementById('first_name').value.trim();
+  const ln=document.getElementById('last_name').value.trim();
+  if(!fn||!ln){showErr('name-err','Please enter your first and last name.');return;}
+  hideErr('name-err');data.first_name=fn;data.last_name=ln;goTo(7);
+}
+function adv_s7(){
+  const a=document.getElementById('address1').value.trim();
+  const c=document.getElementById('city').value.trim();
+  const z=document.getElementById('postal_code').value.trim();
+  if(!a||!c||!z){showErr('addr-err','Please enter your full address including city and postal code.');return;}
+  hideErr('addr-err');data.address1=a;data.city=c;data.postal_code=z;goTo(8);
+}
+function adv_s8(){
+  const v=document.getElementById('email').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){showErr('email-err','Please enter a valid email address.');return;}
+  hideErr('email-err');data.email=v;goTo(9);
+}
+function submitForm(){
+  const p=document.getElementById('phone').value.trim();
+  if(p.replace(/\D/g,'').length<10){showErr('phone-err','Please enter a valid 10-digit phone number.');return;}
+  hideErr('phone-err');data.phone=p;
+  const consentEl=document.getElementById('consent');
+  data.sms_consent=consentEl?consentEl.checked:false;
+  goTo(10);
+  const tfField=document.querySelector('input[name="xxTrustedFormCertUrl"]');
+  const tfCert=tfField?tfField.value:'';
+  const payload={
+    first_name:data.first_name||'',last_name:data.last_name||'',
+    email:data.email||'',phone:data.phone||'',
+    address1:data.address1||'',city:data.city||'',
+    state:data.state||'',postal_code:data.postal_code||'',
+    do_you_own_your_home:data['do_you_own_your_home']||'',
+    time_in_home:data['time_in_home']||'',
+    how_much_is_your_monthly_electric_bill:data['how_much_is_your_monthly_electric_bill']||'',
+    roof_age:data['roof_age']||'',roof_type:data['roof_type']||'',
+    sms_consent:data.sms_consent?'Yes':'No',
+    trusted_form_cert_url:tfCert,
+    gclid:GCLID,utm_source:UTM_SOURCE,utm_medium:UTM_MEDIUM,
+    utm_campaign:UTM_CAMPAIGN,utm_content:UTM_CONTENT,utm_term:UTM_TERM,
+    page_url:PAGE_URL,lead_date:LEAD_DATE,lead_time:LEAD_TIME
+  };
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .finally(()=>{
+      const cal=new URLSearchParams({
+        first_name: data.first_name||'',
+        last_name:  data.last_name||'',
+        email:      data.email||''
+      });
+      safeRedirect(THANK_URL+'?'+cal.toString());
+    });
+}
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  switch(current) {
+    case 1: adv_s1(); break;
+    case 2: adv_s2(); break;
+    case 3: adv_s3(); break;
+    case 4: adv_s4(); break;
+    case 5: adv_s5(); break;
+    case 6: adv_s6(); break;
+    case 7: adv_s7(); break;
+    case 8: adv_s8(); break;
+    case 9: submitForm(); break;
+  }
+});
+
+function initAutocomplete(){
+  const inp=document.getElementById('address1');
+  const ac=new google.maps.places.Autocomplete(inp,{types:['address'],componentRestrictions:{country:'ca'}});
+  ac.addListener('place_changed',function(){
+    const place=ac.getPlace();
+    if(!place.address_components)return;
+    let sn='',rt='',city='',state='',zip='';
+    place.address_components.forEach(c=>{
+      if(c.types.includes('street_number')) sn=c.long_name;
+      if(c.types.includes('route')) rt=c.long_name;
+      if(c.types.includes('locality')) city=c.long_name;
+      if(c.types.includes('administrative_area_level_1')) state=c.short_name;
+      if(c.types.includes('postal_code')) zip=c.long_name;
+    });
+    document.getElementById('address1').value=(sn+' '+rt).trim();
+    document.getElementById('city').value=city;
+    document.getElementById('postal_code').value=zip;
+    data.address1=document.getElementById('address1').value;
+    data.city=city;data.state=state;data.postal_code=zip;
+  });
+}
+data['do_you_own_your_home']='Yes';
+</script>
+</body>
+</html>
