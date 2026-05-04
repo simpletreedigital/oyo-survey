@@ -119,6 +119,25 @@
 
     /* A2P consent checkboxes */
     .consent-block{width:100%;display:flex;flex-direction:column;gap:8px;margin:6px 0 16px;text-align:left}
+
+    .consent-brand{
+      background:rgba(253,230,138,.1);
+      border:1px solid rgba(253,230,138,.25);
+      border-radius:10px;
+      padding:9px 14px;
+      font-size:12px;color:rgba(255,255,255,.85);
+      text-align:center;
+      letter-spacing:.2px;
+    }
+    .consent-brand strong{color:#fde68a;font-weight:700}
+
+    .consent-optional{
+      font-size:11px;color:rgba(110,231,183,.9);
+      text-align:center;font-weight:600;
+      letter-spacing:.3px;
+      padding:2px 0 4px;
+    }
+
     .consent-row{
       display:flex;align-items:flex-start;gap:10px;cursor:pointer;
       padding:11px 12px;background:rgba(255,255,255,.04);
@@ -131,11 +150,30 @@
       width:15px;height:15px;cursor:pointer;
     }
     .consent-text{font-size:11.5px;color:rgba(255,255,255,.72);line-height:1.5}
-    .consent-text strong{color:rgba(255,255,255,.9);font-weight:600}
+    .consent-text strong{color:rgba(255,255,255,.92);font-weight:600}
+
+    .disclosure-list{
+      list-style:none;padding:12px 14px;margin:2px 0;
+      background:rgba(255,255,255,.035);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      display:flex;flex-direction:column;gap:5px;
+    }
+    .disclosure-list li{
+      font-size:11px;color:rgba(255,255,255,.62);
+      line-height:1.5;
+    }
+    .dl-label{
+      color:rgba(253,230,138,.85);
+      font-weight:600;
+      margin-right:4px;
+    }
+    .disclosure-list a{color:rgba(255,255,255,.72);text-decoration:underline}
+
     .consent-legal{
       font-size:10.5px;color:rgba(255,255,255,.42);
       text-align:center;line-height:1.55;
-      margin:8px auto 4px;max-width:440px;
+      margin:4px auto 4px;max-width:440px;
     }
     .consent-legal a{color:rgba(255,255,255,.62);text-decoration:underline}
 
@@ -293,27 +331,46 @@
       <div class="err-msg" id="phone-err">Please enter a valid 10-digit phone number.</div>
 
       <div class="consent-block">
+
+        <div class="consent-brand">
+          📩 SMS messaging from <strong>OYO Energy Limited</strong>
+        </div>
+
+        <div class="consent-optional">
+          ✓ Optional. You'll get your quote either way.
+        </div>
+
         <label class="consent-row">
           <input type="checkbox" id="transactional_consent"/>
           <span class="consent-text">
-            I agree to receive <strong>transactional text messages</strong> from OYO Energy Limited regarding my solar quote, including appointment reminders and follow-up communications.
+            <strong>Transactional SMS:</strong> I agree to receive transactional SMS from OYO Energy Limited regarding my solar quote (appointment reminders, follow-up, service-related messages). Message frequency varies. Message and data rates may apply. Reply STOP to opt out, HELP for help.
           </span>
         </label>
 
         <label class="consent-row">
           <input type="checkbox" id="marketing_consent"/>
           <span class="consent-text">
-            I agree to receive <strong>marketing text messages</strong> from OYO Energy Limited about special offers, promotions, and service updates.
+            <strong>Marketing SMS:</strong> I agree to receive marketing SMS from OYO Energy Limited (special offers, promotions, service updates). Message frequency varies. Message and data rates may apply. Reply STOP to opt out, HELP for help.
           </span>
         </label>
-      </div>
 
-      <p class="consent-legal">
-        Message frequency varies. Msg &amp; data rates may apply. Reply HELP for help, STOP to unsubscribe at any time. Consent to receive SMS is not required to get a quote. By submitting, you agree to OYO Energy's
-        <a href="https://oyoenergy.ca/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
-        and
-        <a href="https://oyoenergy.ca/terms-conditions/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
-      </p>
+        <ul class="disclosure-list">
+          <li><strong>Message frequency varies.</strong> Typically 2 to 6 messages per month based on your inquiry status.</li>
+          <li><strong>Message and data rates may apply.</strong> Charges are determined by your wireless carrier.</li>
+          <li><strong>Reply STOP to opt out</strong> at any time to unsubscribe. Reply HELP for help.</li>
+          <li>Additional support: call (888) 868-8529 or email <a href="mailto:support@oyoenergy.ca">support@oyoenergy.ca</a>.</li>
+          <li>You must be 18 or older to consent. Wireless carriers are not liable for delayed or undelivered messages.</li>
+        </ul>
+
+        <p class="consent-legal">
+          By submitting, you agree to OYO Energy Limited's
+          <a href="https://oyoenergy.ca/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
+          and
+          <a href="https://oyoenergy.ca/terms-conditions/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+          OYO Energy Limited will not sell, rent, or share your phone number or SMS data with third parties for marketing purposes.
+        </p>
+
+      </div>
 
       <button class="next-btn" onclick="submitForm()" style="padding:16px 48px;font-size:15px;">Get My Free Quote →</button>
       <button class="back-btn" onclick="goTo(8)">← Back</button>
